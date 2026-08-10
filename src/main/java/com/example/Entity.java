@@ -56,6 +56,9 @@ public class Entity {
     double getVy(){
         return this.vy;
     }
+    double getRadius(){
+        return this.radius;
+    }
     int getHp(){
         return this.hp;
     }
