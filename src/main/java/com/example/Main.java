@@ -29,9 +29,12 @@ public class Main extends Application {
         walls.setStroke(Color.BLACK);
         walls.setStrokeWidth(10);
 
+        Entity test = new Entity(250, 250, 0, 0, 100, Color.BLUE);
+
         //Ajout des éléments à la fenêtre
         root.getChildren().add(container);
         container.getChildren().add(walls);
+        container.getChildren().add(test.getVisual());
 
         Scene scene = new Scene(root, 700, 900); //scene
 
@@ -41,4 +44,6 @@ public class Main extends Application {
         stage.show();
 
     }
+
+    
 }
