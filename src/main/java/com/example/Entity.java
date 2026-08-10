@@ -62,5 +62,17 @@ public class Entity {
     Circle getVisual(){
         return this.visual;
     }
+
+    //update des positions
+    void update(double dt){
+        this.x += vx * dt;
+        this.y += vy * dt;
+    }
+
+    //update des visuels selon la position
+    void updateVisual(double x, double y){
+        visual.setCenterX(x);
+        visual.setCenterY(y);
+    }
     
 }

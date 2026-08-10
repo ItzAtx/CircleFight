@@ -1,5 +1,6 @@
 package com.example;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -29,7 +30,7 @@ public class Main extends Application {
         walls.setStroke(Color.BLACK);
         walls.setStrokeWidth(10);
 
-        Entity test = new Entity(250, 250, 0, 0, 100, Color.BLUE);
+        Entity test = new Entity(250, 250, 1, 1, 100, Color.BLUE);
 
         //Ajout des éléments à la fenêtre
         root.getChildren().add(container);
@@ -42,6 +43,19 @@ public class Main extends Application {
         stage.setTitle("Test");
         stage.setScene(scene);
         stage.show();
+
+        //Boucle principale du jeu
+        AnimationTimer loop = new AnimationTimer() {
+            @Override
+            public void handle(long now){
+                test.update(1);
+                test.updateVisual(test.getX(), test.getY());
+            }
+        };
+
+        loop.start();
+
+        
 
     }
 
