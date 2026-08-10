@@ -1,5 +1,8 @@
 package com.example;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -32,14 +35,16 @@ public class Main extends Application {
         walls.setStrokeWidth(10);
 
         //Creation des cercles
-        Entity c1 = new Entity(150, 300, 1, 1, 100, Color.BLUE);
-        Entity c2 = new Entity(300, 300, 1, 1, 100, Color.RED);
+        List<Entity> entities = new ArrayList<>();
+        entities.add(new Entity(150, 300, 0, 1, 100, Color.BLUE));
+        entities.add(new Entity(150, 150, 0, 1, 100, Color.RED));
 
         //Ajout des éléments à la fenêtre
         root.getChildren().add(container);
         container.getChildren().add(walls);
-        container.getChildren().add(c1.getVisual());
-        container.getChildren().add(c2.getVisual());
+        for (Entity e : entities) {
+            container.getChildren().add(e.getVisual());
+        }
 
         Scene scene = new Scene(root, 700, 900); //scene
 
@@ -52,26 +57,53 @@ public class Main extends Application {
         AnimationTimer loop = new AnimationTimer() {
             @Override
             public void handle(long now){
-                //Hitbox murs
-                if (c1.getX() - c1.getRadius() <= 0 || c1.getX() + c1.getRadius() >= wallsSize){
-                    c1.setVx(- c1.getVx());
-                }
-                if (c1.getY() - c1.getRadius() <= 0 || c1.getY() + c1.getRadius() >= wallsSize){
-                    c1.setVy(- c1.getVy());
+
+                //Hitbox cercles
+                //Calcul des vecteurs
+                double dx = entities.get(1).getX() - entities.get(0).getX();
+                double dy = entities.get(1).getY() - entities.get(0).getY();
+                //Calcul de la distance entre 2 points : √((x2 - x1)² + (y2 - y1)²)
+                double distance = Math.sqrt(dx * dx + dy * dy);
+                //Vecteurs normalisés
+                double nx = dx / distance;
+                double ny = dy / distance;
+                //Calcul de la somme des deux rayons
+                double sumRadius = entities.get(0).getRadius() + entities.get(1).getRadius();
+                //Calcul du chevauchement (pour pouvoir coller les cercles à la limite)
+                double overlap = sumRadius - distance;
+
+                //Si il y a un chevauchement alors
+                if (overlap > 0){
+
+                    //Calcul des vitesses relatives
+                    double relVx = entities.get(1).getVx() - entities.get(0).getVx();
+                    double relVy = entities.get(1).getVy() - entities.get(0).getVy();
+
+                    //Produit scalaire (à quel point deux vecteurs vont dans la même direction) positif : même direction, négatif  : direction opposées, 0 : perpendiculaire
+                    double vitesse = relVx * nx + relVy * ny;
+
+                    //Mise à jour si collision
+                    if (vitesse <= 0 ){
+                        entities.get(0).setVx(entities.get(0).getVx() + vitesse * nx);
+                        entities.get(0).setVy(entities.get(0).getVy() + vitesse * ny); 
+                        entities.get(1).setVx(entities.get(1).getVx() - vitesse * nx);
+                        entities.get(1).setVy(entities.get(1).getVy() - vitesse * ny); 
+                    }
                 }
 
-                if (c2.getX() - c2.getRadius() <= 0 || c2.getX() + c2.getRadius() >= wallsSize){
-                    c2.setVx(- c2.getVx());
-                }
-                if (c2.getY() - c2.getRadius() <= 0 || c2.getY() + c2.getRadius() >= wallsSize){
-                    c2.setVy(- c2.getVy());
-                }
+                for (Entity e : entities){
+                    //Hitbox murs
+                    if (e.getX() - e.getRadius() <= 0 || e.getX() + e.getRadius() >= wallsSize){
+                        e.setVx(- e.getVx());
+                    }
+                    if (e.getY() - e.getRadius() <= 0 || e.getY() + e.getRadius() >= wallsSize){
+                        e.setVy(- e.getVy());
+                    }
 
-                //Mise à jours des positions
-                c1.update(1);
-                c1.updateVisual(c1.getX(), c1.getY());
-                c2.update(1);
-                c2.updateVisual(c2.getX(), c2.getY());
+                    //Mise à jours des positions
+                    e.update(1);
+                    e.updateVisual(e.getX(), e.getY());
+                }
 
             }
         };
