@@ -15,25 +15,30 @@ public class Main extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Pane root = new Pane();
+        Pane root = new Pane(); //Fenetre
 
-        Rectangle mur = new Rectangle(40, 200, 500, 500); // x, y, largeur, hauteur
-        mur.setFill(Color.TRANSPARENT);
-        mur.setStroke(Color.RED);
-        mur.setStrokeWidth(10);
+        //Conteneur des cercles (arène)
+        Pane container = new Pane(); 
+        container.setPrefSize(500, 500);
+        container.setLayoutX(100);
+        container.setLayoutY(300);
 
-        root.getChildren().add(mur);
+        //Dessin de l'arène
+        Rectangle walls = new Rectangle(0, 0, 500, 500); //x, y, largeur, hauteur
+        walls.setFill(Color.TRANSPARENT);
+        walls.setStroke(Color.BLACK);
+        walls.setStrokeWidth(10);
 
-        Scene scene = new Scene(root); //scene (2)
-        stage.setMinWidth(600);
-        stage.setMinHeight(800);
+        //Ajout des éléments à la fenêtre
+        root.getChildren().add(container);
+        container.getChildren().add(walls);
 
-        //stage (1)
+        Scene scene = new Scene(root, 700, 900); //scene
+
+        //stage
         stage.setTitle("Test");
         stage.setScene(scene);
         stage.show();
 
     }
-
-    
 }
