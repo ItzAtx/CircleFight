@@ -36,8 +36,8 @@ public class Main extends Application {
 
         //Creation des cercles
         List<Entity> entities = new ArrayList<>();
-        entities.add(new Entity(150, 300, 0, 1, 100, Color.BLUE));
-        entities.add(new Entity(150, 150, 0, 1, 100, Color.RED));
+        entities.add(new Entity(120, 120, 1.4, 0.9, 100, Color.BLUE));
+        entities.add(new Entity(380, 350, -1.1, 1.3, 100, Color.RED));
 
         //Ajout des éléments à la fenêtre
         root.getChildren().add(container);
@@ -69,11 +69,15 @@ public class Main extends Application {
                 double ny = dy / distance;
                 //Calcul de la somme des deux rayons
                 double sumRadius = entities.get(0).getRadius() + entities.get(1).getRadius();
-                //Calcul du chevauchement (pour pouvoir coller les cercles à la limite)
+                //Calcul du chevauchement
                 double overlap = sumRadius - distance;
 
                 //Si il y a un chevauchement alors
                 if (overlap > 0){
+
+                    //Baisse des HP (à améliorer : les deux prennent des degats)
+                    entities.get(1).setHp(entities.get(1).getHp() - 1);
+                    entities.get(0).setHp(entities.get(0).getHp() - 1);
 
                     //Calcul des vitesses relatives
                     double relVx = entities.get(1).getVx() - entities.get(0).getVx();

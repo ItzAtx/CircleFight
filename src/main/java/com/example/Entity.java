@@ -1,7 +1,9 @@
 package com.example;
 
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 
 public class Entity {
     double x;
@@ -11,7 +13,9 @@ public class Entity {
     double radius = 30.0;
     int hp;
     Color color;
-    Circle visual;
+    Circle circle;
+    StackPane visual = new StackPane();
+    Text hpText;
 
     //constructeur
     Entity(double _x, double _y, double _vx, double _vy, int _hp, Color color){
@@ -21,9 +25,11 @@ public class Entity {
         vy = _vy;
         hp = _hp;
 
-        visual = new Circle(x, y, radius);
-        visual.setFill(color);
 
+        circle = new Circle(0, 0, radius);
+        circle.setFill(color);
+        hpText = new Text("" + hp);
+        visual.getChildren().addAll(circle, hpText);
     }
 
     //setter
@@ -62,7 +68,7 @@ public class Entity {
     int getHp(){
         return this.hp;
     }
-    Circle getVisual(){
+    StackPane getVisual(){
         return this.visual;
     }
 
@@ -74,8 +80,9 @@ public class Entity {
 
     //update des visuels selon la position
     void updateVisual(double x, double y){
-        visual.setCenterX(x);
-        visual.setCenterY(y);
+        visual.setLayoutX(x - radius);
+        visual.setLayoutY(y - radius);
+        hpText.setText("" + hp);
     }
     
 }
