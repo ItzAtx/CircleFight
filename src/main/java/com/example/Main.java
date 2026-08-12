@@ -36,8 +36,8 @@ public class Main extends Application {
 
         //Creation des cercles
         List<Entity> entities = new ArrayList<>();
-        entities.add(new Entity(120, 120, 1.4, 0.9, 100, Color.BLUE));
-        entities.add(new Entity(380, 350, -1.1, 1.3, 100, Color.RED));
+        entities.add(new Entity(120, 120, 1.4, 0.9, 1, Color.BLUE));
+        entities.add(new Entity(380, 350, -1.1, 1.3, 1, Color.RED));
 
         //Ajout des éléments à la fenêtre
         root.getChildren().add(container);
@@ -57,13 +57,13 @@ public class Main extends Application {
         AnimationTimer loop = new AnimationTimer() {
             @Override
             public void handle(long now){
+                List<Entity> toRemove = new ArrayList<>();
 
                 //Hitbox cercles
                 for (int i = 0; i < entities.size(); i++){
                     for (int j = i + 1; j < entities.size(); j++){
                         Entity current = entities.get(i);
                         Entity e = entities.get(j);
-
 
                         //Calcul des vecteurs
                         double dx = e.getX() - current.getX();
@@ -84,9 +84,19 @@ public class Main extends Application {
                         //Si il y a un chevauchement alors
                         if (overlap > 0){
 
-                            //Baisse des HP (à améliorer : les deux prennent des degats)
-                            e.setHp(e.getHp() - 1);
-                            current.setHp(current.getHp() - 1);
+                            //Calcul vecteur vitesse
+                            double speedE = Math.sqrt(e.getVx() * e.getVx() + e.getVy() * e.getVy());
+                            double speedCurrent = Math.sqrt(current.getVx() * current.getVx() + current.getVy() * current.getVy());
+
+                            //Baisse des HP (le plus lent prend des degats)
+                            if (speedE > speedCurrent){
+                                current.setHp(current.getHp() - 1);
+                            } else if (speedCurrent > speedE){
+                                e.setHp(e.getHp() - 1);
+                            } else {
+                                current.setHp(current.getHp() - 1);
+                                e.setHp(e.getHp() - 1);
+                            }
 
                             //Calcul des vitesses relatives
                             double relVx = e.getVx() - current.getVx();
@@ -105,9 +115,22 @@ public class Main extends Application {
                         }
                     }
                 }
-                
+
+                //Stockage des noeuds à supprimer
                 for (Entity e : entities){
-                    //Hitbox murs
+                    if (e.getHp() <= 0){
+                        toRemove.add(e);
+                    }
+                }
+
+                //Suppression des noeuds
+                for (Entity dead : toRemove){
+                    entities.remove(dead);
+                    container.getChildren().remove(dead.getVisual());
+                }
+
+                //Hitbox murs
+                for (Entity e : entities){
                     if (e.getX() - e.getRadius() <= 0 || e.getX() + e.getRadius() >= wallsSize){
                         e.setVx(- e.getVx());
                     }
