@@ -59,42 +59,53 @@ public class Main extends Application {
             public void handle(long now){
 
                 //Hitbox cercles
-                //Calcul des vecteurs
-                double dx = entities.get(1).getX() - entities.get(0).getX();
-                double dy = entities.get(1).getY() - entities.get(0).getY();
-                //Calcul de la distance entre 2 points : √((x2 - x1)² + (y2 - y1)²)
-                double distance = Math.sqrt(dx * dx + dy * dy);
-                //Vecteurs normalisés
-                double nx = dx / distance;
-                double ny = dy / distance;
-                //Calcul de la somme des deux rayons
-                double sumRadius = entities.get(0).getRadius() + entities.get(1).getRadius();
-                //Calcul du chevauchement
-                double overlap = sumRadius - distance;
+                for (int i = 0; i < entities.size(); i++){
+                    for (int j = i + 1; j < entities.size(); j++){
+                        Entity current = entities.get(i);
+                        Entity e = entities.get(j);
 
-                //Si il y a un chevauchement alors
-                if (overlap > 0){
 
-                    //Baisse des HP (à améliorer : les deux prennent des degats)
-                    entities.get(1).setHp(entities.get(1).getHp() - 1);
-                    entities.get(0).setHp(entities.get(0).getHp() - 1);
+                        //Calcul des vecteurs
+                        double dx = e.getX() - current.getX();
+                        double dy = e.getY() - current.getY();
 
-                    //Calcul des vitesses relatives
-                    double relVx = entities.get(1).getVx() - entities.get(0).getVx();
-                    double relVy = entities.get(1).getVy() - entities.get(0).getVy();
+                        //Calcul de la distance entre 2 points : √((x2 - x1)² + (y2 - y1)²)
+                        double distance = Math.sqrt(dx * dx + dy * dy);
 
-                    //Produit scalaire (à quel point deux vecteurs vont dans la même direction) positif : même direction, négatif  : direction opposées, 0 : perpendiculaire
-                    double vitesse = relVx * nx + relVy * ny;
+                        //Vecteurs normalisés
+                        double nx = dx / distance;
+                        double ny = dy / distance;
 
-                    //Mise à jour si collision
-                    if (vitesse <= 0 ){
-                        entities.get(0).setVx(entities.get(0).getVx() + vitesse * nx);
-                        entities.get(0).setVy(entities.get(0).getVy() + vitesse * ny); 
-                        entities.get(1).setVx(entities.get(1).getVx() - vitesse * nx);
-                        entities.get(1).setVy(entities.get(1).getVy() - vitesse * ny); 
+                        //Calcul de la somme des deux rayons
+                        double sumRadius = current.getRadius() + e.getRadius();
+                        //Calcul du chevauchement
+                        double overlap = sumRadius - distance;
+
+                        //Si il y a un chevauchement alors
+                        if (overlap > 0){
+
+                            //Baisse des HP (à améliorer : les deux prennent des degats)
+                            e.setHp(e.getHp() - 1);
+                            current.setHp(current.getHp() - 1);
+
+                            //Calcul des vitesses relatives
+                            double relVx = e.getVx() - current.getVx();
+                            double relVy = e.getVy() - current.getVy();
+
+                            //Produit scalaire (à quel point deux vecteurs vont dans la même direction) positif : même direction, négatif  : direction opposées, 0 : perpendiculaire
+                            double vitesse = relVx * nx + relVy * ny;
+
+                            //Mise à jour si collision
+                            if (vitesse <= 0 ){
+                                current.setVx(current.getVx() + vitesse * nx);
+                                current.setVy(current.getVy() + vitesse * ny); 
+                                e.setVx(e.getVx() - vitesse * nx);
+                                e.setVy(e.getVy() - vitesse * ny); 
+                            }
+                        }
                     }
                 }
-
+                
                 for (Entity e : entities){
                     //Hitbox murs
                     if (e.getX() - e.getRadius() <= 0 || e.getX() + e.getRadius() >= wallsSize){
