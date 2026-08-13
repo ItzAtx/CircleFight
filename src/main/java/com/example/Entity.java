@@ -5,20 +5,23 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
-public class Entity {
+
+abstract public class Entity {
     double x;
     double y;
     double vx;
     double vy;
     double radius = 30.0;
     int hp;
-    Color color;
+    int damages = 1;
+    double angle = 0;
+    double attackSpeed = 1;
     Circle circle;
     StackPane visual = new StackPane();
     Text hpText;
 
     //constructeur
-    Entity(double _x, double _y, double _vx, double _vy, int _hp, Color color){
+    public Entity(double _x, double _y, double _vx, double _vy, int _hp, Color color){
         x = _x;
         y = _y;
         vx = _vx;
@@ -33,56 +36,77 @@ public class Entity {
     }
 
     //setter
-    void setX(double _x){
+    public void setX(double _x){
         this.x = _x;
-    }
-    void setY(double _y){
+    }   
+    public void setY(double _y){
         this.y = _y;
     }
-    void setVx(double _vx){
+    public void setVx(double _vx){
         this.vx = _vx;
     }
-    void setVy(double _vy){
+    public void setVy(double _vy){
         this.vy = _vy;
     }
-    void setHp(int _hp){
+    public void setHp(int _hp){
         this.hp = _hp;
+    }
+    public void setDamages(int _damages){
+        this.damages = _damages;
+    }
+    public void setAngle(double _angle){
+        this.angle = _angle;
+    }
+    public void setAttackSpeed(double _attackSpeed){
+        this.attackSpeed = _attackSpeed;
     }
 
     //getter
-    double getX(){
+    public double getX(){
         return this.x;
     }
-    double getY(){
+    public double getY(){
         return this.y;
     }
-    double getVx(){
+    public double getVx(){
         return this.vx;
     }
-    double getVy(){
+    public double getVy(){
         return this.vy;
     }
-    double getRadius(){
+    public double getRadius(){
         return this.radius;
     }
-    int getHp(){
+    public int getHp(){
         return this.hp;
     }
-    StackPane getVisual(){
+    public int getDamages(){
+        return this.damages;
+    }
+    public double getAngle(){
+        return this.angle;
+    }
+    public double getAttackSpeed() {
+        return attackSpeed;
+    }
+    public StackPane getVisual(){
         return this.visual;
     }
 
     //update des positions
-    void update(double dt){
+    public void update(double dt){
         this.x += vx * dt;
         this.y += vy * dt;
     }
 
     //update des visuels selon la position
-    void updateVisual(double x, double y){
+    public void updateVisual(double x, double y){
         visual.setLayoutX(x - radius);
         visual.setLayoutY(y - radius);
         hpText.setText("" + hp);
     }
+
+    abstract public void onHit();
+    abstract public void updateWeapon(double dt);
     
 }

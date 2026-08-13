@@ -3,6 +3,8 @@ package com.example;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.types.Brute;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -36,8 +38,8 @@ public class Main extends Application {
 
         //Creation des cercles
         List<Entity> entities = new ArrayList<>();
-        entities.add(new Entity(120, 120, 1.4, 0.9, 1, Color.BLUE));
-        entities.add(new Entity(380, 350, -1.1, 1.3, 1, Color.RED));
+        entities.add(new Brute(120, 120, 1.4, 0.9, 10, Color.BLUE));
+        entities.add(new Brute(380, 350, -1.1, 1.3, 10, Color.RED));
 
         //Ajout des éléments à la fenêtre
         root.getChildren().add(container);
@@ -90,12 +92,16 @@ public class Main extends Application {
 
                             //Baisse des HP (le plus lent prend des degats)
                             if (speedE > speedCurrent){
-                                current.setHp(current.getHp() - 1);
+                                current.setHp(current.getHp() - current.getDamages());
+                                current.onHit();
                             } else if (speedCurrent > speedE){
-                                e.setHp(e.getHp() - 1);
+                                e.setHp(e.getHp() - e.getDamages());
+                                e.onHit();
                             } else {
-                                current.setHp(current.getHp() - 1);
-                                e.setHp(e.getHp() - 1);
+                                current.setHp(current.getHp() - current.getDamages());
+                                e.setHp(e.getHp() - e.getDamages());
+                                current.onHit();
+                                e.onHit();
                             }
 
                             //Calcul des vitesses relatives
@@ -140,6 +146,7 @@ public class Main extends Application {
 
                     //Mise à jours des positions
                     e.update(1);
+                    e.updateWeapon(0.05);
                     e.updateVisual(e.getX(), e.getY());
                 }
 
