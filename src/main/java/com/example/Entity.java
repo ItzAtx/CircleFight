@@ -7,27 +7,38 @@ import javafx.scene.text.Text;
 
 
 abstract public class Entity {
+    //Coordonnées/Vitesse + vitesse bonus par knockback/Angle de l'arme
     double x;
     double y;
     double vx;
     double vy;
+    double knockbackVx = 0;
+    double knockbackVy = 0;
+    double angle = 0;
+    
+    //Caractéristique
     double radius = 30.0;
     int hp;
     int damages = 1;
-    double angle = 0;
     double attackSpeed = 1;
+    double knockback;
+
+    //Test si déjà touché
     boolean weaponHit;
+    
+    //Visuel
     Circle circle;
     StackPane visual = new StackPane();
     Text hpText;
 
     //constructeur
-    public Entity(double _x, double _y, double _vx, double _vy, int _hp, Color color){
+    public Entity(double _x, double _y, double _vx, double _vy, int _hp, double _knockback, Color color){
         x = _x;
         y = _y;
         vx = _vx;
         vy = _vy;
         hp = _hp;
+        knockback = _knockback;
 
 
         circle = new Circle(0, 0, radius);
@@ -50,9 +61,7 @@ abstract public class Entity {
         this.vy = _vy;
     }
     public void setHp(int _hp){
-        if (_hp != hp){
-            this.hp = _hp;
-        }
+        this.hp = _hp;
     }
     public void setDamages(int _damages){
         this.damages = _damages;
@@ -108,8 +117,11 @@ abstract public class Entity {
 
     //update des positions
     public void update(double dt){
-        this.x += vx * dt;
-        this.y += vy * dt;
+        this.x += (vx + knockbackVx) * dt;
+        this.y += (vy + knockbackVy) * dt;
+        
+        this.knockbackVx *= 0.99;
+        this.knockbackVy *= 0.99;
     }
 
     //update des visuels selon la position
@@ -132,6 +144,30 @@ abstract public class Entity {
 
     public void setWeaponHit(boolean weaponHit) {
         this.weaponHit = weaponHit;
+    }
+
+    public double getKnockback() {
+        return knockback;
+    }
+
+    public void setKnockback(double knockback) {
+        this.knockback = knockback;
+    }
+
+    public double getKnockbackVx() {
+        return knockbackVx;
+    }
+
+    public void setKnockbackVx(double knockbackVx) {
+        this.knockbackVx = knockbackVx;
+    }
+
+    public double getKnockbackVy() {
+        return knockbackVy;
+    }
+
+    public void setKnockbackVy(double knockbackVy) {
+        this.knockbackVy = knockbackVy;
     }
     
 }

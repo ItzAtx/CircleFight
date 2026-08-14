@@ -42,8 +42,8 @@ public class Main extends Application {
 
         //Creation des cercles
         List<Entity> entities = new ArrayList<>();
-        entities.add(new Brute(120, 120, 1.4, 0.9, 10, Color.BLUE));
-        entities.add(new Brute(380, 350, -1.1, 1.3, 10, Color.RED));
+        entities.add(new Brute(120, 120, 1.4, 0.9, 100, 15, Color.BLUE));
+        entities.add(new Brute(380, 350, -1.1, 1.3, 100, 15, Color.RED));
 
         //Ajout des éléments à la fenêtre
         root.getChildren().add(container);
@@ -67,9 +67,7 @@ public class Main extends Application {
             public void handle(long now){
                 //Hitbox cercles
                 for (i = 0; i < entities.size(); i++){
-
                     handleWallCollision(entities.get(i), wallsSize);
-                    
                     for (j = i + 1; j < entities.size(); j++){
                         Entity current = entities.get(i);
                         Entity e = entities.get(j);
@@ -96,10 +94,10 @@ public class Main extends Application {
 
                 toRemove.clear();
 
-                //Hitbox murs
                 for (Entity e : entities){
                     //Mise à jours des positions
                     e.update(1);
+                    handleWallCollision(entities.get(i), wallsSize);
                     e.updateWeapon(0.05);
                     e.updateVisual(e.getX(), e.getY());
                 }

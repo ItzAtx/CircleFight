@@ -65,7 +65,9 @@ public class Hitbox{
                 current.setVx(current.getVx() + vitesse * nx);
                 current.setVy(current.getVy() + vitesse * ny); 
                 e.setVx(e.getVx() - vitesse * nx);
-                e.setVy(e.getVy() - vitesse * ny); 
+                e.setVy(e.getVy() - vitesse * ny);
+                e.setKnockbackVx(e.getKnockbackVx() - vitesse * nx);
+                e.setKnockbackVy(e.getKnockbackVy() - vitesse * ny);
             }
         }
     }
@@ -78,24 +80,28 @@ public class Hitbox{
         return e.getY() - current.getWeaponY();
     }
 
-    static double calculateWeaponDistance(double weaponDx, double weaponDy){
-        return Math.sqrt(weaponDx * weaponDx + weaponDy * weaponDy);
-    }
-
     static void handleWeaponCollision(Entity e, Entity current){
         double weaponDx = calculateWeaponDx(e, current);
         double weaponDy = calculateWeaponDy(e, current);
-        double weaponDistance = calculateWeaponDistance(weaponDx, weaponDy);
+        double weaponDistance = calculateDistance(weaponDx, weaponDy);
+
+        //Vecteurs normalisés
+        double weaponNx = calculateNx(weaponDx, weaponDistance);
+        double weaponNy = calculateNy(weaponDy, weaponDistance);
 
         //Si l'arme est dans le cercle alors isTouchingNow prend true
-        boolean isTouchingNow = (weaponDistance <= e.getRadius());
+        boolean isTouchingNow = (weaponDistance <= e.getRadius() + 15); // +15 POUR AUGMENTER HITBOX A REVOIR
 
         //Si l'arme touche et qu'elle n'as pas deja touché dans la même frame
         if (isTouchingNow && !current.getWeaponHit()){
             //Mise à jour des hp
-            e.setHp(e.getHp() - current.getDamages());
+            e.setHp(e.getHp());
             current.onHit();
             current.bounceWeapon();
+
+            //Knockback
+            e.setKnockbackVx(current.getKnockback() * weaponNx);
+            e.setKnockbackVy(current.getKnockback() * weaponNy);
         }
 
         current.setWeaponHit(isTouchingNow); //L'arme a déjà touchée sur cette frame
@@ -104,9 +110,11 @@ public class Hitbox{
     static void handleWallCollision(Entity e, int wallsSize){
         if (e.getX() - e.getRadius() <= 0 || e.getX() + e.getRadius() >= wallsSize){
             e.setVx(- e.getVx());
+            e.setKnockbackVx(- e.getKnockbackVx());
         }
         if (e.getY() - e.getRadius() <= 0 || e.getY() + e.getRadius() >= wallsSize){
             e.setVy(- e.getVy());
+            e.setKnockbackVy(- e.getKnockbackVy());
         }
     }
 
