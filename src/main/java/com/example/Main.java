@@ -3,6 +3,9 @@ package com.example;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.Hitbox.handleCircleCollision;
+import static com.example.Hitbox.handleWallCollision;
+import static com.example.Hitbox.handleWeaponCollision;
 import com.example.types.Brute;
 
 import javafx.animation.AnimationTimer;
@@ -14,6 +17,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    int i, j;
 
     public static void main(String[] args) {
         Application.launch(args); //lancement de l'appli
@@ -57,68 +61,23 @@ public class Main extends Application {
 
         //Boucle principale du jeu
         AnimationTimer loop = new AnimationTimer() {
+            List<Entity> toRemove = new ArrayList<>();
+
             @Override
             public void handle(long now){
-                List<Entity> toRemove = new ArrayList<>();
-
                 //Hitbox cercles
-                for (int i = 0; i < entities.size(); i++){
-                    for (int j = i + 1; j < entities.size(); j++){
+                for (i = 0; i < entities.size(); i++){
+
+                    handleWallCollision(entities.get(i), wallsSize);
+                    
+                    for (j = i + 1; j < entities.size(); j++){
                         Entity current = entities.get(i);
                         Entity e = entities.get(j);
 
-                        //Calcul des vecteurs
-                        double dx = e.getX() - current.getX();
-                        double dy = e.getY() - current.getY();
-
-                        //Calcul de la distance entre 2 points : √((x2 - x1)² + (y2 - y1)²)
-                        double distance = Math.sqrt(dx * dx + dy * dy);
-
-                        //Vecteurs normalisés
-                        double nx = dx / distance;
-                        double ny = dy / distance;
-
-                        //Calcul de la somme des deux rayons
-                        double sumRadius = current.getRadius() + e.getRadius();
-                        //Calcul du chevauchement
-                        double overlap = sumRadius - distance;
-
-                        //Si il y a un chevauchement alors
-                        if (overlap > 0){
-
-                            //Calcul vecteur vitesse
-                            double speedE = Math.sqrt(e.getVx() * e.getVx() + e.getVy() * e.getVy());
-                            double speedCurrent = Math.sqrt(current.getVx() * current.getVx() + current.getVy() * current.getVy());
-
-                            //Baisse des HP (le plus lent prend des degats)
-                            if (speedE > speedCurrent){
-                                current.setHp(current.getHp() - current.getDamages());
-                                current.onHit();
-                            } else if (speedCurrent > speedE){
-                                e.setHp(e.getHp() - e.getDamages());
-                                e.onHit();
-                            } else {
-                                current.setHp(current.getHp() - current.getDamages());
-                                e.setHp(e.getHp() - e.getDamages());
-                                current.onHit();
-                                e.onHit();
-                            }
-
-                            //Calcul des vitesses relatives
-                            double relVx = e.getVx() - current.getVx();
-                            double relVy = e.getVy() - current.getVy();
-
-                            //Produit scalaire (à quel point deux vecteurs vont dans la même direction) positif : même direction, négatif  : direction opposées, 0 : perpendiculaire
-                            double vitesse = relVx * nx + relVy * ny;
-
-                            //Mise à jour si collision
-                            if (vitesse <= 0 ){
-                                current.setVx(current.getVx() + vitesse * nx);
-                                current.setVy(current.getVy() + vitesse * ny); 
-                                e.setVx(e.getVx() - vitesse * nx);
-                                e.setVy(e.getVy() - vitesse * ny); 
-                            }
-                        }
+                        handleCircleCollision(e, current);
+                        handleWeaponCollision(e, current);
+                        handleWeaponCollision(current, e);
+                        
                     }
                 }
 
@@ -135,15 +94,10 @@ public class Main extends Application {
                     container.getChildren().remove(dead.getVisual());
                 }
 
+                toRemove.clear();
+
                 //Hitbox murs
                 for (Entity e : entities){
-                    if (e.getX() - e.getRadius() <= 0 || e.getX() + e.getRadius() >= wallsSize){
-                        e.setVx(- e.getVx());
-                    }
-                    if (e.getY() - e.getRadius() <= 0 || e.getY() + e.getRadius() >= wallsSize){
-                        e.setVy(- e.getVy());
-                    }
-
                     //Mise à jours des positions
                     e.update(1);
                     e.updateWeapon(0.05);

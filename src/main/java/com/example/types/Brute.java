@@ -16,6 +16,8 @@ public class Brute extends Entity{
         weapon.setTranslateX(getRadius() * 2); //Déplacement de l'armre au bord du cercle
     }
 
+    
+
     @Override
     public void onHit(){
         setDamages(getDamages() + 1);

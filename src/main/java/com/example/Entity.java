@@ -16,6 +16,7 @@ abstract public class Entity {
     int damages = 1;
     double angle = 0;
     double attackSpeed = 1;
+    boolean weaponHit;
     Circle circle;
     StackPane visual = new StackPane();
     Text hpText;
@@ -49,7 +50,9 @@ abstract public class Entity {
         this.vy = _vy;
     }
     public void setHp(int _hp){
-        this.hp = _hp;
+        if (_hp != hp){
+            this.hp = _hp;
+        }
     }
     public void setDamages(int _damages){
         this.damages = _damages;
@@ -93,6 +96,16 @@ abstract public class Entity {
         return this.visual;
     }
 
+    public double getWeaponX(){
+        double weaponDistance = getRadius() * 2;
+        return getX() + weaponDistance * Math.cos(getAngle());
+    }
+    
+    public double getWeaponY(){
+        double weaponDistance = getRadius() * 2;
+        return getY() + weaponDistance * Math.sin(getAngle());
+    }
+
     //update des positions
     public void update(double dt){
         this.x += vx * dt;
@@ -106,7 +119,19 @@ abstract public class Entity {
         hpText.setText("" + hp);
     }
 
+    public void bounceWeapon(){
+        setAttackSpeed((-getAttackSpeed()));
+    }
+
     abstract public void onHit();
     abstract public void updateWeapon(double dt);
+
+    public boolean getWeaponHit() {
+        return weaponHit;
+    }
+
+    public void setWeaponHit(boolean weaponHit) {
+        this.weaponHit = weaponHit;
+    }
     
 }
