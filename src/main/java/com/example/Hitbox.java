@@ -100,21 +100,37 @@ public class Hitbox{
             current.bounceWeapon();
 
             //Knockback
-            e.setKnockbackVx(current.getKnockback() * weaponNx);
-            e.setKnockbackVy(current.getKnockback() * weaponNy);
+            e.setKnockbackVx(current.getKnockbackForce() * weaponNx);
+            e.setKnockbackVy(current.getKnockbackForce() * weaponNy);
         }
 
         current.setWeaponHit(isTouchingNow); //L'arme a déjà touchée sur cette frame
     }
 
     static void handleWallCollision(Entity e, int wallsSize){
-        if (e.getX() - e.getRadius() <= 0 || e.getX() + e.getRadius() >= wallsSize){
-            e.setVx(- e.getVx());
-            e.setKnockbackVx(- e.getKnockbackVx());
+        //Gauche
+        if (e.getX() - e.getRadius() <= 0){
+            e.setX(e.getRadius());
+            e.setVx(-e.getVx());
+            e.setKnockbackVx(-e.getKnockbackVx());
         }
-        if (e.getY() - e.getRadius() <= 0 || e.getY() + e.getRadius() >= wallsSize){
-            e.setVy(- e.getVy());
-            e.setKnockbackVy(- e.getKnockbackVy());
+        //Droit
+        if (e.getX() + e.getRadius() >= wallsSize){
+            e.setX(wallsSize - e.getRadius());
+            e.setVx(-e.getVx());
+            e.setKnockbackVx(-e.getKnockbackVx());
+        }
+        //Haut
+        if (e.getY() - e.getRadius() <= 0){
+            e.setY(e.getRadius());
+            e.setVy(-e.getVy());
+            e.setKnockbackVy(-e.getKnockbackVy());
+        }
+        //Bas
+        if (e.getY() + e.getRadius() >= wallsSize){
+            e.setY(wallsSize - e.getRadius());
+            e.setVy(-e.getVy());
+            e.setKnockbackVy(-e.getKnockbackVy());
         }
     }
 

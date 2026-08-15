@@ -38,7 +38,9 @@ public class Main extends Application {
         Rectangle walls = new Rectangle(0, 0, wallsSize, wallsSize); //x, y, largeur, hauteur
         walls.setFill(Color.TRANSPARENT);
         walls.setStroke(Color.BLACK);
+        walls.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         walls.setStrokeWidth(10);
+
 
         //Creation des cercles
         List<Entity> entities = new ArrayList<>();
@@ -97,7 +99,6 @@ public class Main extends Application {
                 for (Entity e : entities){
                     //Mise à jours des positions
                     e.update(1);
-                    handleWallCollision(entities.get(i), wallsSize);
                     e.updateWeapon(0.05);
                     e.updateVisual(e.getX(), e.getY());
                 }
@@ -107,7 +108,6 @@ public class Main extends Application {
 
         loop.start();
 
-        
 
     }
 

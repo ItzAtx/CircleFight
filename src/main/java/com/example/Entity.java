@@ -21,7 +21,7 @@ abstract public class Entity {
     int hp;
     int damages = 1;
     double attackSpeed = 1;
-    double knockback;
+    double knockbackForce;
 
     //Test si déjà touché
     boolean weaponHit;
@@ -32,13 +32,13 @@ abstract public class Entity {
     Text hpText;
 
     //constructeur
-    public Entity(double _x, double _y, double _vx, double _vy, int _hp, double _knockback, Color color){
+    public Entity(double _x, double _y, double _vx, double _vy, int _hp, double _knockbackForce, Color color){
         x = _x;
         y = _y;
         vx = _vx;
         vy = _vy;
         hp = _hp;
-        knockback = _knockback;
+        knockbackForce = _knockbackForce;
 
 
         circle = new Circle(0, 0, radius);
@@ -72,6 +72,18 @@ abstract public class Entity {
     public void setAttackSpeed(double _attackSpeed){
         this.attackSpeed = _attackSpeed;
     }
+    public void setWeaponHit(boolean _weaponHit) {
+        this.weaponHit = _weaponHit;
+    }
+    public void setKnockbackForce(double _knockbackForce) {
+        this.knockbackForce = _knockbackForce;
+    }
+    public void setKnockbackVx(double _knockbackVx) {
+        this.knockbackVx = _knockbackVx;
+    }
+    public void setKnockbackVy(double _knockbackVy) {
+        this.knockbackVy = _knockbackVy;
+    }
 
     //getter
     public double getX(){
@@ -104,16 +116,27 @@ abstract public class Entity {
     public StackPane getVisual(){
         return this.visual;
     }
-
     public double getWeaponX(){
         double weaponDistance = getRadius() * 2;
         return getX() + weaponDistance * Math.cos(getAngle());
     }
-    
     public double getWeaponY(){
         double weaponDistance = getRadius() * 2;
         return getY() + weaponDistance * Math.sin(getAngle());
     }
+    public boolean getWeaponHit() {
+        return weaponHit;
+    }
+    public double getKnockbackForce() {
+        return knockbackForce;
+    }
+    public double getKnockbackVx() {
+        return knockbackVx;
+    }
+    public double getKnockbackVy() {
+        return knockbackVy;
+    }
+
 
     //update des positions
     public void update(double dt){
@@ -138,36 +161,8 @@ abstract public class Entity {
     abstract public void onHit();
     abstract public void updateWeapon(double dt);
 
-    public boolean getWeaponHit() {
-        return weaponHit;
-    }
+    
 
-    public void setWeaponHit(boolean weaponHit) {
-        this.weaponHit = weaponHit;
-    }
-
-    public double getKnockback() {
-        return knockback;
-    }
-
-    public void setKnockback(double knockback) {
-        this.knockback = knockback;
-    }
-
-    public double getKnockbackVx() {
-        return knockbackVx;
-    }
-
-    public void setKnockbackVx(double knockbackVx) {
-        this.knockbackVx = knockbackVx;
-    }
-
-    public double getKnockbackVy() {
-        return knockbackVy;
-    }
-
-    public void setKnockbackVy(double knockbackVy) {
-        this.knockbackVy = knockbackVy;
-    }
+    
     
 }

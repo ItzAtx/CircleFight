@@ -12,11 +12,11 @@ public class Brute extends Entity{
     
     public Brute(double _x, double _y, double _vx, double _vy, int _hp, double _knockback, Color _color){
         super(_x, _y, _vx, _vy, _hp, _knockback, _color);
+        weapon.setFitWidth(60);
+        weapon.setFitHeight(60);
         getVisual().getChildren().add(weapon);
-        weapon.setTranslateX(getRadius() * 2); //Déplacement de l'armre au bord du cercle
+        weapon.setTranslateX(getRadius() * 2); //Déplacement de l'arme au bord du cercle
     }
-
-    
 
     @Override
     public void onHit(){
